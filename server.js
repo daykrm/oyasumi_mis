@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-require('dotenv').config();
+require("dotenv").config();
+const db = require("./App/Models");
 
 const PORT = process.env.PORT;
 
@@ -15,9 +16,16 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+db.mongoose
+  .connect(db.url, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log("Connected to the DB !!");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+require('./App/Routes/user.routes')(app)
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT : ${PORT}`);
