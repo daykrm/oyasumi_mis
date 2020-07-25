@@ -42,3 +42,15 @@ exports.findAll = (req, res) => {
       console.log(err);
     });
 };
+
+exports.deleteAll = (req, res) => {
+  User.deleteMany({})
+    .then((data) => {
+      res.send({
+        message: `${data.deletedCount} Rows were deleted`,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
