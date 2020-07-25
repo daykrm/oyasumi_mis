@@ -17,7 +17,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 db.mongoose
-  .connect(db.url, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(db.url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  })
   .then(() => {
     console.log("Connected to the DB !!");
   })
@@ -25,7 +29,7 @@ db.mongoose
     console.log(err);
   });
 
-require('./App/Routes/user.routes')(app)
+require("./App/Routes/user.routes")(app);
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT : ${PORT}`);

@@ -1,6 +1,5 @@
 const db = require("../Models");
 const User = db.users;
-const hash = require("object-hash");
 
 exports.create = (req, res) => {
   //Validate
@@ -18,7 +17,7 @@ exports.create = (req, res) => {
   const user = new User({
     name: { first: req.body.fname, last: req.body.lname },
     username: req.body.username,
-    password: hash(req.body.password),
+    password: req.body.password,
     role: req.body.role,
   });
 
@@ -41,6 +40,26 @@ exports.findAll = (req, res) => {
     .catch((err) => {
       console.log(err);
     });
+};
+
+exports.fineOne = (req, res) => {
+  User.findOne({ _id : req.params.id }, (err, user) => {
+    if (err) throw err;
+
+    user.comparePassword("1234", function (err, isMatch) {
+      if (err) throw err;
+
+      res.send({ message : `1234 : ${isMatch}`})
+      console.log("1234:", isMatch); // -&gt; Password123: true
+    });
+
+    user.comparePassword("123Password", function (err, isMatch) {
+      if (err) throw err;
+      
+      console.log("123Password:", isMatch); // -&gt; 123Password: false
+    });
+
+  });
 };
 
 exports.deleteAll = (req, res) => {

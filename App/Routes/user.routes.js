@@ -6,6 +6,8 @@ module.exports = (app) => {
 
   router.get("/", user.findAll);
 
+  router.get('/:id', user.fineOne);
+
   router.delete("/", user.deleteAll);
 
   app.use("/api/users", router);
