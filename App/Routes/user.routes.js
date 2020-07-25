@@ -6,7 +6,9 @@ module.exports = (app) => {
 
   router.get("/", user.findAll);
 
-  router.get('/:id', user.fineOne);
+  router.get("/:id", user.fineOne);
+
+  router.post("/login", user.login);
 
   router.delete("/", user.deleteAll);
 

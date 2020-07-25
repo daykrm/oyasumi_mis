@@ -5,6 +5,7 @@ mongoose.Promise = global.Promise;
 
 const db = {
   url: dbConfig.url,
+  secretOrKey : dbConfig.secretOrKey,
   mongoose: mongoose,
   users: require("./users.model"),
 };

@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 require("dotenv").config();
 const db = require("./App/Models");
+const passport = require("passport");
 
 const PORT = process.env.PORT;
 
@@ -28,6 +29,10 @@ db.mongoose
   .catch((err) => {
     console.log(err);
   });
+
+app.use(passport.initialize());
+
+require("./App/Config/passport")(passport);
 
 require("./App/Routes/user.routes")(app);
 

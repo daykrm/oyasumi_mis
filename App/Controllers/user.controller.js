@@ -1,16 +1,15 @@
 const db = require("../Models");
+const validateRegisterInput = require("../Validation/register");
+const validateLoginInput = require("../Validation/login");
+const jwt = require("jsonwebtoken");
 const User = db.users;
 
 exports.create = (req, res) => {
+  const { errors, isValid } = validateRegisterInput(req.body);
+
   //Validate
-  if (
-    !req.body.fname ||
-    !req.body.lname ||
-    !req.body.username ||
-    !req.body.password
-  ) {
-    res.status(400).send({ message: `The field cannot be empty !!` });
-    return;
+  if (!isValid) {
+    return res.status(400).json(errors);
   }
 
   User.countDocuments({ username: req.body.username }, function (err, count) {
@@ -39,6 +38,51 @@ exports.create = (req, res) => {
           console.log(err);
         });
     }
+  });
+};
+
+exports.login = (req, res) => {
+  const { errors, isValid } = validateLoginInput(req.body);
+
+  //Validate
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  const username = req.body.username;
+  const password = req.body.password;
+
+  User.findOne({ username }).then((user) => {
+    if (!user) {
+      return res.status(404).json({ usernotfound: "Username not found !!" });
+    }
+
+    user.comparePassword(password, function (err, isMatch) {
+      if (err) throw err;
+      if (isMatch) {
+        const payload = {
+          id: user._id,
+          name: user.name,
+          role : user.role
+        };
+
+        jwt.sign(
+          payload,
+          db.secretOrKey,
+          { expiresIn: 31556926 },
+          (err, token) => {
+            res.json({
+              success: true,
+              token: "Bearer "+token ,
+            });
+          }
+        );
+      } else {
+        return res
+          .status(400)
+          .json({ passwordincorrect: "Password incorrect !!" });
+      }
+    });
   });
 };
 
