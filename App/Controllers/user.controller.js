@@ -17,7 +17,7 @@ exports.create = (req, res) => {
     if (count > 0) {
       //document exists });
       res.status(400).send({
-        message: `This username : ${req.body.username} already taken!`,
+        message: `Username : ${req.body.username} already exits!`,
       });
       return;
     } else {
